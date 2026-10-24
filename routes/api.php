@@ -1,6 +1,10 @@
+
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\InventarioController;
+use App\Http\Controllers\Api\KardexController;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -8,8 +12,13 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
-        return new \App\Http\Resources\UserResource($request->user());
+        return new UserResource($request->user());
     });
 
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    Route::get('/inventario', [InventarioController::class, 'index'])->middleware('can:consultar-inventario');
+
+    Route::get('/kardex', [KardexController::class, 'index'])->middleware('can:consultar-kardex');
+
 });
