@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('existencias', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('medicamento_id')->constrained('medicamentos')->restrictOnDelete();
             $table->foreignId('lote_id')->constrained('lotes')->restrictOnDelete();
             $table->foreignId('bodega_id')->constrained('bodegas')->restrictOnDelete();
             $table->integer('cantidad')->default(0)->comment('Cantidad de existencias del lote en la bodega')->check('cantidad > 0');
