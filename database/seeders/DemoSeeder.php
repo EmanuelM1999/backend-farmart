@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Bodega;
 use App\Models\Existencia;
+use App\Models\InventarioMovimiento;
 use App\Models\Lote;
 use App\Models\Medicamento;
 use App\Models\Paciente;
@@ -149,9 +150,8 @@ class DemoSeeder extends Seeder
                 );
             }
 
-            // 4. Existencias iniciales.
-            // El seeder crea existencias para probar el inventario.
-            // La lógica de negocio deberá impedir usar lotes vencidos.
+            // 4. Existencias iniciales y registro de entradas en kardex.
+
             foreach ($lotes as $codigoLote => $lote) {
                 $bodegaCodigo = match (true) {
                     str_contains($codigoLote, 'MED-006') => 'BOD-CEN',
@@ -159,16 +159,48 @@ class DemoSeeder extends Seeder
                     default => 'BOD-HOSP',
                 };
 
-                Existencia::firstOrCreate(
-                    [
-                        'lote_id' => $lote->id,
-                        'medicamento_id' => $lote->medicamento_id,
-                        'bodega_id' => $bodegas[$bodegaCodigo]->id,
-                    ],
-                    [
-                        'cantidad' => 100,
-                    ]
-                );
+                DB::transaction(function () use (
+                    $lote,
+                    $bodegas,
+                    $bodegaCodigo
+                ) {
+                    $existencia = Existencia::firstOrCreate(
+                        [
+                            'lote_id' => $lote->id,
+                            'medicamento_id' => $lote->medicamento_id,
+                            'bodega_id' => $bodegas[$bodegaCodigo]->id,
+                        ],
+                        [
+                            'cantidad' => 100,
+                        ]
+                    );
+
+                    $movimientoInicialExiste = InventarioMovimiento::where(
+                        'existencia_id',
+                        $existencia->id
+                    )
+                        ->where('tipo_movimiento', 'entrada')
+                        ->where(
+                            'motivo',
+                            'Carga inicial de inventario de demostración.'
+                        )
+                        ->exists();
+
+                    if (! $movimientoInicialExiste) {
+                        $rolRegente = Role::where('name', 'medico')->firstOrFail();
+
+                        $regente = User::where('role_id', $rolRegente->id)
+                            ->firstOrFail();
+
+                        InventarioMovimiento::create([
+                            'existencia_id' => $existencia->id,
+                            'tipo_movimiento' => 'entrada',
+                            'cantidad' => $existencia->cantidad,
+                            'user_id' => $regente->id,
+                            'motivo' => 'Carga inicial de inventario de demostración.',
+                        ]);
+                    }
+                });
             }
 
             // 5. Pacientes sintéticos
