@@ -16,8 +16,9 @@ return new class extends Migration
             $table->foreignId('dispensacion_id')->constrained('dispensaciones')->restrictOnDelete();
             $table->foreignId('medicamento_id')->constrained('medicamentos')->restrictOnDelete();
             $table->foreignId('lote_id')->constrained('lotes')->restrictOnDelete();
+            $table->foreignId('prescripcion_detalle_id')->constrained('prescripcion_detalles')->restrictOnDelete();
             $table->integer('cantidad_dispensada')->comment('Cantidad de medicamento dispensada')->check('cantidad_dispensada > 0');
-            $table->integer('existencia')->comment('Cantidad de medicamento en existencia')->check('existencia >= 0');
+            $table->integer('cantidad_existencia_despues')->comment('Cantidad de medicamento en existencia')->check('cantidad_existencia_despues >= 0');
             $table->timestamps();
         });
     }

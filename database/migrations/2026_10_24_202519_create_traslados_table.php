@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignId('bodega_origen_id')->constrained('bodegas')->restrictOnDelete();
             $table->foreignId('bodega_destino_id')->constrained('bodegas')->restrictOnDelete();
             $table->foreignId('solicitante_id')->constrained('users')->restrictOnDelete();
-            $table->foreignId('aprobador_id')->constrained('users')->restrictOnDelete();
-            $table->tinyInteger('estado')->default(0)->comment('Estado del traslado: 0 = Pendiente, 1 = Aprobado, 2 = Rechazado');
+            $table->foreignId('aprobador_id')->nullable()->constrained('users')->restrictOnDelete();
+            $table->enum('estado', ['BORRADOR', 'SOLICITADO', 'APROBADO', 'EN_TRANSITO', 'RECIBIDO', 'RECIBIDO_PARCIAL', 'ANULADO'])->default('BORRADOR')->comment('Estado del traslado');
             $table->timestamps();
         });
     }

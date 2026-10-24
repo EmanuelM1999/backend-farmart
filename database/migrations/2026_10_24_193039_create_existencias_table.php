@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('medicamento_id')->constrained('medicamentos')->restrictOnDelete();
             $table->foreignId('lote_id')->constrained('lotes')->restrictOnDelete();
             $table->foreignId('bodega_id')->constrained('bodegas')->restrictOnDelete();
-            $table->integer('cantidad')->default(0)->comment('Cantidad de existencias del lote en la bodega')->check('cantidad > 0');
+            $table->integer('cantidad')->comment('Cantidad de existencias del lote en la bodega')->check('cantidad >= 0');
             $table->unique(['lote_id', 'medicamento_id', 'bodega_id'], 'unique_lote_medicamento_bodega');
             $table->timestamps();
         });

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('inventario_movimientos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('existencia_id')->constrained('existencias')->restrictOnDelete();
-            $table->enum('tipo_movimiento', ['entrada', 'salida'])->comment('Tipo de movimiento: entrada o salida');
+            $table->enum('tipo_movimiento', ['entrada', 'salida', 'salida_por_traslado', 'entrada_por_traslado', 'ajuste'])->comment('Tipo de movimiento: entrada o salida');
             $table->integer('cantidad')->comment('Cantidad de medicamento movida')->check('cantidad > 0');
             $table->foreignId('user_id')->constrained('users')->restrictOnDelete();
             $table->string('motivo')->comment('Motivo del movimiento de inventario');

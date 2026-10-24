@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -35,5 +36,30 @@ class User extends Authenticatable
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
+    }
+
+    public function prescripciones(): HasMany
+    {
+        return $this->hasMany(Prescripcion::class);
+    }
+
+    public function dispensaciones(): HasMany
+    {
+        return $this->hasMany(Dispensacion::class);
+    }
+
+    public function movimientosInventario(): HasMany
+    {
+        return $this->hasMany(InventarioMovimiento::class);
+    }
+
+    public function trasladosSolicitados(): HasMany
+    {
+        return $this->hasMany(Traslado::class, 'solicitante_id');
+    }
+
+    public function trasladosAprobados(): HasMany
+    {
+        return $this->hasMany(Traslado::class, 'aprobador_id');
     }
 }

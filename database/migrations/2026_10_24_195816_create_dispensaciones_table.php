@@ -16,7 +16,8 @@ return new class extends Migration
             $table->foreignId('paciente_id')->constrained('pacientes')->restrictOnDelete();
             $table->foreignId('prescripcion_id')->constrained('prescripciones')->restrictOnDelete();
             $table->foreignId('user_id')->constrained('users')->restrictOnDelete();
-            $table->uuid('clave_idempotencia')->unique()->comment('Clave única para garantizar la idempotencia de la dispensación');
+            $table->uuid('clave_idempotencia')->unique()->comment('Clave de idempotencia para evitar duplicados');
+            $table->string('request_hash', 64)->comment('Hash del request para garantizar la idempotencia');
             $table->timestamps();
         });
     }
