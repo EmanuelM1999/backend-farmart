@@ -10,6 +10,7 @@ use App\Models\Medicamento;
 use App\Models\Paciente;
 use App\Models\Prescripcion;
 use App\Models\PrescripcionDetalle;
+use App\Models\InventarioMinimo;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -294,6 +295,26 @@ class DemoSeeder extends Seeder
                         ]
                     );
                 }
+            }
+
+            // Configuración de stock mínimo por bodega y medicamento.
+            $minimos = [
+                ['bodega' => 'BOD-CEN', 'medicamento' => 'MED-001', 'cantidad_minima' => 20],
+                ['bodega' => 'BOD-CEN', 'medicamento' => 'MED-006', 'cantidad_minima' => 120],
+                ['bodega' => 'BOD-URG', 'medicamento' => 'MED-002', 'cantidad_minima' => 20],
+                ['bodega' => 'BOD-HOSP', 'medicamento' => 'MED-003', 'cantidad_minima' => 20],
+            ];
+
+            foreach ($minimos as $minimo) {
+                InventarioMinimo::updateOrCreate(
+                    [
+                        'bodega_id' => $bodegas[$minimo['bodega']]->id,
+                        'medicamento_id' => $medicamentos[$minimo['medicamento']]->id,
+                    ],
+                    [
+                        'cantidad_minima' => $minimo['cantidad_minima'],
+                    ]
+                );
             }
         });
     }

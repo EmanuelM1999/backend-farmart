@@ -21,4 +21,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/kardex', [KardexController::class, 'index'])->middleware('can:consultar-kardex');
 
+    Route::get('/inventario/alertas/vencimiento', [InventarioController::class, 'alertasVencimiento']);
+
+    Route::get('/inventario/alertas/stock-minimo', [InventarioController::class, 'alertasStockMinimo']);
+
 });

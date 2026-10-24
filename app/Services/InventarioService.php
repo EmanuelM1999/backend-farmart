@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Models\Existencia;
+use App\Models\InventarioMinimo;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class InventarioService
 {
@@ -60,5 +62,61 @@ class InventarioService
             ->orderBy('lote_id')
             ->paginate(25)
             ->withQueryString();
+    }
+
+    /**
+     * Consulta los lotes que vencen dentro de los próximos 90 días.
+     */
+    public function alertasVencimiento(): Collection
+    {
+        $hoy = now()->toDateString();
+        $limite = now()->addDays(90)->toDateString();
+
+        return Existencia::query()
+            ->with([
+                'bodega:id,codigo,nombre',
+                'medicamento:id,codigo,nombre,unidad_medida',
+                'lote:id,codigo,fecha_vencimiento,medicamento_id',
+            ])
+            ->whereHas('lote', function ($query) use ($hoy, $limite) {
+                $query->whereBetween(
+                    'fecha_vencimiento',
+                    [$hoy, $limite]
+                );
+            })
+            ->where('cantidad', '>', 0)
+            ->orderBy('bodega_id')
+            ->orderBy('medicamento_id')
+            ->orderBy('lote_id')
+            ->get();
+    }
+
+    /**
+     * Consulta productos cuya existencia total por bodega
+     * está por debajo del mínimo configurado.
+     */
+    public function alertasStockMinimo(): Collection
+    {
+        return InventarioMinimo::query()
+            ->with([
+                'bodega:id,codigo,nombre',
+                'medicamento:id,codigo,nombre,unidad_medida',
+            ])
+            ->get()
+            ->filter(function ($minimo) {
+                $cantidadActual = Existencia::query()
+                    ->where('bodega_id', $minimo->bodega_id)
+                    ->where('medicamento_id', $minimo->medicamento_id)
+                    ->sum('cantidad');
+
+                $minimo->cantidad_actual = $cantidadActual;
+                $minimo->faltante = max(
+                    0,
+                    $minimo->cantidad_minima - $cantidadActual
+                );
+
+                return $cantidadActual < $minimo->cantidad_minima;
+            })
+            ->values();
     }
 }
