@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('traslado_detalles', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('traslado_id')->constrained('traslados')->restrictOnDelete();
+            $table->foreignId('medicamento_id')->constrained('medicamentos')->restrictOnDelete();
+            $table->foreignId('lote_id')->constrained('lotes')->restrictOnDelete();
+            $table->integer('cantidad_solicitada')->comment('Cantidad de medicamento solicitada')->check('cantidad_solicitada > 0');
+            $table->integer('cantidad_despachada')->comment('Cantidad de medicamento despachada')->check('cantidad_despachada > 0');
+            $table->integer('cantidad_recibida')->comment('Cantidad de medicamento recibida')->check('cantidad_recibida > 0');
             $table->timestamps();
         });
     }
