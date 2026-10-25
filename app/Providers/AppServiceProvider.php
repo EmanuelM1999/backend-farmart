@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Contracts\InventoryAiProvider;
+use App\Services\InventoryAI\MockInventoryAiProvider;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -12,7 +14,20 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(
+            InventoryAiProvider::class,
+            function ($app) {
+                $provider = config('inventory_ai.provider', 'mock');
+
+                if ($provider === 'mock') {
+                    return $app->make(MockInventoryAiProvider::class);
+                }
+
+                throw new \RuntimeException(
+                    "Proveedor de IA no implementado: {$provider}"
+                );
+            }
+        );
     }
 
     /**
