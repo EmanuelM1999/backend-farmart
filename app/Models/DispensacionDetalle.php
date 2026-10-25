@@ -4,13 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class DispensacionDetalle extends Model
 {
     protected $table = 'dispensacion_detalles';
 
-    protected $fillable = ['dispensacion_id', 'medicamento_id', 'lote_id', 'cantidad_dispensada', 'cantidad_existencia_despues'];
+    protected $fillable = ['dispensacion_id', 'medicamento_id', 'prescripcion_detalle_id', 'lote_id', 'cantidad_dispensada', 'cantidad_existencia_despues'];
 
     protected function casts(): array
     {
