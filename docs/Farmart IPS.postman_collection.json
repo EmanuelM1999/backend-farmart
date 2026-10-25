@@ -32,12 +32,12 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/health",
+              "raw": "{{base_url}}/ready",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "health"
+                "ready"
               ]
             }
           },
