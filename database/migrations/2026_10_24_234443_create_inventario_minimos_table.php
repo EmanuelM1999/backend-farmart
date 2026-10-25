@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('medicamento_id')->constrained('medicamentos')->restrictOnDelete();
             $table->unsignedInteger('cantidad_minima');
             $table->timestamps();
-            $table->unique(['bodega_id', 'medicamento_id'],'inventario_minimos_bodega_medicamento_unique');
+            $table->unique(['bodega_id', 'medicamento_id'], 'inventario_minimos_bodega_medicamento_unique');
         });
     }
 

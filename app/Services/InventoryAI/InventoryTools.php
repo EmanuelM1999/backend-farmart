@@ -125,7 +125,7 @@ class InventoryTools
         $existencias = $query->limit(500)->get();
 
         $resultados = $existencias
-            ->groupBy(fn (Existencia $e) => $e->bodega_id . '-' . $e->medicamento_id)
+            ->groupBy(fn (Existencia $e) => $e->bodega_id.'-'.$e->medicamento_id)
             ->map(function ($grupo) {
                 $primera = $grupo->first();
 
@@ -135,8 +135,7 @@ class InventoryTools
                     'bodega' => $primera->bodega->nombre,
                     'cantidad_total' => $grupo->sum('cantidad'),
                     'cantidad_vigente' => $grupo
-                        ->filter(fn (Existencia $e) =>
-                            $e->lote->fecha_vencimiento->toDateString() >= now()->toDateString()
+                        ->filter(fn (Existencia $e) => $e->lote->fecha_vencimiento->toDateString() >= now()->toDateString()
                         )
                         ->sum('cantidad'),
                 ];

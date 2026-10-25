@@ -24,7 +24,8 @@ class DispensacionController extends Controller
             ->setStatusCode(201);
     }
 
-    public function autorizar(StoreDispensacionRequest $request, Dispensacion $dispensacion, DispensacionService $service): JsonResponse {
+    public function autorizar(StoreDispensacionRequest $request, Dispensacion $dispensacion, DispensacionService $service): JsonResponse
+    {
         $resultado = $service->autorizarSolicitud(
             $dispensacion->id,
             $request->validated(),

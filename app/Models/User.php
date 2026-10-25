@@ -63,7 +63,7 @@ class User extends Authenticatable
         return $this->hasMany(Traslado::class, 'aprobador_id');
     }
 
-    //Metodo para comprobar si el usuario tiene un rol específico.
+    // Metodo para comprobar si el usuario tiene un rol específico.
     public function hasRole(string $role): bool
     {
         return $this->role?->name === $role;

@@ -12,7 +12,7 @@ class PrescripcionDetalle extends Model
 
     protected $fillable = ['prescripcion_id', 'medicamento_id', 'cantidad_prescrita'];
 
-     protected function casts(): array
+    protected function casts(): array
     {
         return [
             'cantidad_prescrita' => 'integer',

@@ -4,13 +4,13 @@ namespace Database\Seeders;
 
 use App\Models\Bodega;
 use App\Models\Existencia;
+use App\Models\InventarioMinimo;
 use App\Models\InventarioMovimiento;
 use App\Models\Lote;
 use App\Models\Medicamento;
 use App\Models\Paciente;
 use App\Models\Prescripcion;
 use App\Models\PrescripcionDetalle;
-use App\Models\InventarioMinimo;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;

@@ -18,7 +18,7 @@ Route::get('/ready', function () {
                 'database' => 'ok',
             ],
         ]);
-    } catch (\Throwable $exception) {
+    } catch (Throwable $exception) {
         return response()->json([
             'status' => 'not_ready',
             'checks' => [
