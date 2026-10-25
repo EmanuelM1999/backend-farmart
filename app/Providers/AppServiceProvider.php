@@ -63,5 +63,13 @@ class AppServiceProvider extends ServiceProvider
             || $user->hasRole('regente_farmacia')
             || $user->hasRole('auditor')
         );
+
+        Gate::define('despachar-traslados', fn ($user) => $user->hasRole('auxiliar_farmacia')
+            || $user->hasRole('regente_farmacia')
+        );
+
+        Gate::define('anular-traslados', fn ($user) => $user->hasRole('auxiliar_farmacia')
+            || $user->hasRole('regente_farmacia')
+        );
     }
 }
