@@ -1,4 +1,3 @@
-
 <?php
 
 use App\Http\Controllers\Api\AuthController;
@@ -94,3 +93,4 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
 });
+
