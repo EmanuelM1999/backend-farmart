@@ -1,58 +1,88 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Farmart IPS — Backend
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+API REST desarrollada con Laravel y PostgreSQL para gestionar las funcionalidades de Farmart IPS, incluyendo autenticación, usuarios, roles y gestión de inventario.
 
-## About Laravel
+## Tecnologías
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- PHP y Laravel
+- PostgreSQL
+- Docker y Docker Compose
+- Nginx y PHP-FPM
+- API REST con respuestas JSON
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Requisitos previos
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Docker Desktop con Docker Compose.
+- Git.
+- Archivo de variables de entorno configurado según `.env.example`.
 
-## Learning Laravel
+## Ejecución del proyecto
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Clonar el repositorio:
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone <URL_DEL_REPOSITORIO>
+cd backend-farmart
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Crear el archivo `.env` a partir de la plantilla disponible y configurar las variables necesarias para la aplicación y PostgreSQL.
 
-## Contributing
+```bash
+cp .env.example .env
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+En Windows, este paso también puede realizarse copiando manualmente `.env.example` como `.env`.
 
-## Code of Conduct
+Construir e iniciar los servicios:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+docker compose up --build -d
+```
 
-## Security Vulnerabilities
+Consultar el estado de los contenedores:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+docker compose ps
+```
 
-## License
+Si la configuración del proyecto no genera automáticamente la clave de Laravel, ejecutarla mediante Artisan dentro del contenedor PHP correspondiente:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+docker compose exec api php artisan key:generate
+```
+
+La generación de la clave debe realizarse antes de utilizar la aplicación por primera vez y conservarse entre reinicios.
+
+**Nota:** el comando anterior presupone que el servicio PHP se llama `api`. Verificar el nombre real en el archivo Compose. Las migraciones deben ejecutarse mediante el mecanismo configurado en el proyecto.
+
+## Acceso a la API
+
+- API local: `http://localhost:8000/api`
+- Endpoint de inicio de sesión: `POST /api/login`
+
+La URL y los endpoints deben coincidir con la configuración de Nginx y las rutas registradas en Laravel.
+
+## Documentación de la API
+
+La colección de Postman se encuentra disponible en el directorio de documentación del proyecto o se entrega como archivo independiente. Incluye las solicitudes necesarias para probar los endpoints, sus parámetros y las respuestas esperadas.
+
+## Decisiones de diseño y trade-offs
+
+1. **Laravel con arquitectura basada en servicios:** separar la lógica de negocio de los controladores facilita el mantenimiento y la reutilización del código, aunque requiere definir y mantener clases adicionales.
+2. **PostgreSQL como base de datos relacional:** permite gestionar relaciones e integridad de los datos; como contrapartida, requiere administrar migraciones, respaldos y recuperación.
+3. **Docker Compose:** permite reproducir el entorno de desarrollo y simplifica la ejecución de los servicios; sin embargo, por sí solo no proporciona alta disponibilidad ni orquestación avanzada.
+4. **Separación entre frontend y backend:** permite evolucionar y desplegar ambos componentes independientemente, a costa de coordinar los cambios en sus contratos de API.
+
+## Supuestos
+
+- El frontend consume la API mediante HTTP y utiliza la URL definida en su configuración de entorno.
+- Las credenciales y secretos se configuran mediante variables de entorno y no se incluyen en el repositorio.
+- Los datos utilizados para pruebas son ficticios y no corresponden a pacientes reales ni a información confidencial de la IPS.
+
+## Fuera del alcance
+
+- Despliegue automatizado mediante CI/CD, mientras los pipelines no estén implementados.
+- Alta disponibilidad y escalamiento automático de la infraestructura.
+- Monitoreo centralizado y recuperación automatizada ante desastres.
+
+Estos elementos pueden incorporarse en futuras iteraciones según los requisitos de producción.
